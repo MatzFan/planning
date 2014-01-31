@@ -1,9 +1,13 @@
 Planning::Application.routes.draw do
+
+  post "planning_apps/create"
+  get "planning_apps/index"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'welcome#index'
+  root 'planning_apps#index'
 
   # Example of regular route:
   # get 'planning_apps' => 'planning_apps#index'
