@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140201133240) do
+ActiveRecord::Schema.define(version: 20140201134942) do
 
   create_table "app_statuses", force: true do |t|
     t.string   "description"
@@ -20,11 +20,15 @@ ActiveRecord::Schema.define(version: 20140201133240) do
   end
 
   create_table "planning_apps", force: true do |t|
-    t.string   "reference",     null: false
+    t.string   "reference",                             null: false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "app_status_id"
+    t.string   "applicant"
+    t.string   "app_property"
+    t.decimal  "latitude",      precision: 8, scale: 6
+    t.decimal  "longitude",     precision: 8, scale: 6
   end
 
   add_index "planning_apps", ["app_status_id"], name: "index_planning_apps_on_app_status_id", using: :btree
