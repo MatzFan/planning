@@ -8,16 +8,20 @@ class AppScraper
   ITEMS = %w[Reference Category Status Officer Applicant Description
            ApplicationAddress RoadName Parish PostCode Constraints Agent]
 
-  def scrape_app_details(ref)
-    page_source = source_for(ref, 'Detail')
-    if valid_application?(ref)
-      data = parse_details_for(page_source)
-      PlanningApp.create(reference: data[0], description: data[5])
+  def scrape_app_details(from_ref, to_ref)
+    (from_ref.split('/').last..to_ref.split('/').last).each do |app_number|
+      page_source = source_for("P/2014/#{app_number}", 'Detail')
+      write_data_for(page_source) unless invalid_application?(page_source)
     end
   end
 
-  def valid_application?(page_source)
-    page_source.include?('P/2014/0180')
+  def write_data_for(page_source)
+    data = parse_details_for(page_source)
+    PlanningApp.create(reference: data[0], description: data[5])
+  end
+
+  def invalid_application?(page_source)
+    page_source.include?('An unexpected error has occurred')
   end
 
   def source_for(app_ref, type)
