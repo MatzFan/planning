@@ -1,4 +1,4 @@
-module AppScraper
+class AppScraper
 
   URL_ROOT = 'https://www.mygov.je/Planning/Pages/PlanningApplication'
 
@@ -8,18 +8,24 @@ module AppScraper
   ITEMS = %w[Reference Category Status Officer Applicant Description
            ApplicationAddress RoadName Parish PostCode Constraints Agent]
 
-  def self.scrape_app_details(ref)
-    source = self.get_page_source(ref, 'Detail')
-    data = self.parse_details(source)
-    PlanningApp.create(reference: data[0], description: data[5])
+  def scrape_app_details(ref)
+    page_source = source_for(ref, 'Detail')
+    if valid_application?(ref)
+      data = parse_details_for(page_source)
+      PlanningApp.create(reference: data[0], description: data[5])
+    end
   end
 
-  def self.get_page_source(app_ref, type)
+  def valid_application?(page_source)
+    page_source.include?('P/2014/0180')
+  end
+
+  def source_for(app_ref, type)
     app_url = "#{URL_ROOT}#{type}.aspx?s=1&r=" + app_ref
     source = `curl "#{app_url}"`
   end
 
-  def self.parse_details(source)
+  def parse_details_for(source)
     app_details = []
     table_data = source.split('pln-app')[1] # middle section of 3 is of interest
     table_split = table_data.split(DIV)
@@ -27,15 +33,13 @@ module AppScraper
       data = table_split[i + 1].split('<').first
       app_details << data.split('>').last
     end
-    app_details << self.parse_coord('Latitude', source)
-    app_details << self.parse_coord('Longitude', source)
+    app_details << parse_coord('Latitude', source)
+    app_details << parse_coord('Longitude', source)
   end
 
-  def self.parse_coord(coord, source)
+  def parse_coord(coord, source)
     coord = source.split("window.MapCentre#{coord} = ").last
     coord = coord.split(';').first
   end
-
-
 
 end # of module
