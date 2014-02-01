@@ -4,7 +4,7 @@ describe PlanningApp do
 
   context "::get_new_apps" do
 
-    specify "should populate database with the range of applications given" do
+    specify "should populate database with an (inclusive) range of apps" do
       PlanningApp.get_new_apps('P/2014/0180', 'P/2014/0181')
       expect(PlanningApp.first.reference).to eq('P/2014/0180')
       expect(PlanningApp.last.reference).to eq('P/2014/0181')
@@ -15,9 +15,6 @@ describe PlanningApp do
       expect(PlanningApp.count).to eq(1)
     end
 
-
-  end
-
-
+  end # of context
 
 end # of describe

@@ -45,6 +45,8 @@ GEM
     diff-lcs (1.2.5)
     erubis (2.7.0)
     execjs (2.0.2)
+    foreigner (1.6.1)
+      activerecord (>= 3.0.0)
     haml (4.0.5)
       tilt
     haml-rails (0.5.3)
@@ -148,6 +150,7 @@ DEPENDENCIES
   capybara
   coffee-rails (~> 4.0.0)
   database_cleaner
+  foreigner
   haml-rails
   jbuilder (~> 1.2)
   jquery-rails
