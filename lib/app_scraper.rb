@@ -29,6 +29,8 @@ class AppScraper
     status.planning_apps << new_app
     parish = Parish.find_or_create_by(name: data[8])
     parish.planning_apps << new_app
+    agent = AgentName.find_or_create_by(name: data[11])
+    agent.planning_apps << new_app
     new_app.save
   end
 
