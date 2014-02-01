@@ -33,6 +33,7 @@ describe AppScraper do
         AppScraper.new.get_new_apps('P', '2012', '0181', '0181')
         expect(PlanningApp.last.app_category.code).to eq('P')
         expect(PlanningApp.last.app_status.description).to eq('Approved')
+        expect(PlanningApp.last.parish.name).to eq('St. Helier')
       end
 
     end # of context

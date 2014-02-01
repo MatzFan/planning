@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140201143341) do
+ActiveRecord::Schema.define(version: 20140201151651) do
 
   create_table "app_categories", force: true do |t|
     t.string   "code"
@@ -22,6 +22,12 @@ ActiveRecord::Schema.define(version: 20140201143341) do
 
   create_table "app_statuses", force: true do |t|
     t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "parishes", force: true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -37,12 +43,15 @@ ActiveRecord::Schema.define(version: 20140201143341) do
     t.decimal  "latitude",        precision: 8, scale: 6
     t.decimal  "longitude",       precision: 8, scale: 6
     t.integer  "app_category_id"
+    t.integer  "parish_id"
   end
 
   add_index "planning_apps", ["app_category_id"], name: "index_planning_apps_on_app_category_id", using: :btree
   add_index "planning_apps", ["app_status_id"], name: "index_planning_apps_on_app_status_id", using: :btree
+  add_index "planning_apps", ["parish_id"], name: "index_planning_apps_on_parish_id", using: :btree
 
   add_foreign_key "planning_apps", "app_categories", name: "planning_apps_app_category_id_fk"
   add_foreign_key "planning_apps", "app_statuses", name: "planning_apps_app_status_id_fk"
+  add_foreign_key "planning_apps", "parishes", name: "planning_apps_parish_id_fk"
 
 end

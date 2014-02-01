@@ -27,6 +27,8 @@ class AppScraper
     category.planning_apps << new_app
     status = AppStatus.find_or_create_by(description: data[2])
     status.planning_apps << new_app
+    parish = Parish.find_or_create_by(name: data[8])
+    parish.planning_apps << new_app
     new_app.save
   end
 
