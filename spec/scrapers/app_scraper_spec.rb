@@ -35,6 +35,9 @@ describe AppScraper do
         expect(PlanningApp.last.app_status.description).to eq('Approved')
         expect(PlanningApp.last.parish.name).to eq('St. Helier')
         expect(PlanningApp.last.agent_name.name).to eq('Currie & Brown (Consultants) Ltd')
+        expect(PlanningApp.last.officer.name).to eq('Rebecca Hampson')
+        # expect(PlanningApp.last.app_road.name).to eq('Bath Street')
+        # expect(PlanningApp.last.app_postcode.code).to eq('JE2 4SU')
       end
 
     end # of context
