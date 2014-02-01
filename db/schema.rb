@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140201160240) do
+ActiveRecord::Schema.define(version: 20140201160917) do
 
   create_table "agent_names", force: true do |t|
     t.string   "name"
@@ -22,6 +22,12 @@ ActiveRecord::Schema.define(version: 20140201160240) do
   create_table "app_categories", force: true do |t|
     t.string   "code"
     t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "app_roads", force: true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -58,16 +64,19 @@ ActiveRecord::Schema.define(version: 20140201160240) do
     t.integer  "parish_id"
     t.integer  "agent_name_id"
     t.integer  "officer_id"
+    t.integer  "app_road_id"
   end
 
   add_index "planning_apps", ["agent_name_id"], name: "index_planning_apps_on_agent_name_id", using: :btree
   add_index "planning_apps", ["app_category_id"], name: "index_planning_apps_on_app_category_id", using: :btree
+  add_index "planning_apps", ["app_road_id"], name: "index_planning_apps_on_app_road_id", using: :btree
   add_index "planning_apps", ["app_status_id"], name: "index_planning_apps_on_app_status_id", using: :btree
   add_index "planning_apps", ["officer_id"], name: "index_planning_apps_on_officer_id", using: :btree
   add_index "planning_apps", ["parish_id"], name: "index_planning_apps_on_parish_id", using: :btree
 
   add_foreign_key "planning_apps", "agent_names", name: "planning_apps_agent_name_id_fk"
   add_foreign_key "planning_apps", "app_categories", name: "planning_apps_app_category_id_fk"
+  add_foreign_key "planning_apps", "app_roads", name: "planning_apps_app_road_id_fk"
   add_foreign_key "planning_apps", "app_statuses", name: "planning_apps_app_status_id_fk"
   add_foreign_key "planning_apps", "officers", name: "planning_apps_officer_id_fk"
   add_foreign_key "planning_apps", "parishes", name: "planning_apps_parish_id_fk"
