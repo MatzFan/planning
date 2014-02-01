@@ -8,6 +8,7 @@ class PlanningApp < ActiveRecord::Base
   belongs_to :agent_name
   belongs_to :officer
   belongs_to :app_road
+  belongs_to :app_postcode
 
   validate :reference, presence: true, uniqueness: true
 
