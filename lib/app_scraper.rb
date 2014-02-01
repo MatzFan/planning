@@ -35,9 +35,23 @@ class AppScraper
     parish.planning_apps << new_app
     postcode = AppPostcode.find_or_create_by(code: data[9])
     postcode.planning_apps << new_app
+
+    populate(new_app, parse_constraints(data[10]))
+
     agent = AgentName.find_or_create_by(name: data[11])
     agent.planning_apps << new_app
     new_app.save
+  end
+
+  def populate(app, constraints)
+    constraints.each do |c|
+      constraint = Constraint.find_or_create_by(name: c)
+      app.constraints << constraint
+    end
+  end
+
+  def parse_constraints(string)
+    constraints = string.split(',').map { |c| c.strip }
   end
 
   def invalid_application?(page_source)
