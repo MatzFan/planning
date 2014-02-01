@@ -8,9 +8,9 @@ class AppScraper
   ITEMS = %w[Reference Category Status Officer Applicant Description
            ApplicationAddress RoadName Parish PostCode Constraints Agent]
 
-  def scrape_app_details(from_ref, to_ref)
-    (from_ref.split('/').last..to_ref.split('/').last).each do |app_number|
-      page_source = source_for("P/2014/#{app_number}", 'Detail')
+  def get_new_apps(type, year, from_ref, to_ref)
+    (from_ref..to_ref).each do |app_number|
+      page_source = source_for("#{type}/#{year}/#{app_number}", 'Detail')
       write_data_for(page_source) unless invalid_application?(page_source)
     end
   end
@@ -23,6 +23,8 @@ class AppScraper
                               app_property: data[6],
                               latitude: data[12],
                               longitude: data[13])
+    category = AppCategory.find_or_create_by(code: data[1])
+    category.planning_apps << new_app
     status = AppStatus.find_or_create_by(description: data[2])
     status.planning_apps << new_app
     new_app.save
