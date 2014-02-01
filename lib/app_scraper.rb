@@ -17,7 +17,12 @@ class AppScraper
 
   def write_data_for(page_source)
     data = parse_details_for(page_source)
-    PlanningApp.create(reference: data[0], description: data[5])
+    PlanningApp.create(reference: data[0],
+                       applicant: data[4],
+                       description: data[5],
+                       app_property: data[6],
+                       latitude: data[12],
+                       longitude: data[13])
   end
 
   def invalid_application?(page_source)
