@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140201161343) do
+ActiveRecord::Schema.define(version: 20140201162340) do
 
   create_table "agent_names", force: true do |t|
     t.string   "name"
@@ -43,6 +43,20 @@ ActiveRecord::Schema.define(version: 20140201161343) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "constraints", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "constraints_planning_apps", id: false, force: true do |t|
+    t.integer "constraint_id",   null: false
+    t.integer "planning_app_id", null: false
+  end
+
+  add_index "constraints_planning_apps", ["constraint_id"], name: "constraints_planning_apps_constraint_id_fk", using: :btree
+  add_index "constraints_planning_apps", ["planning_app_id"], name: "constraints_planning_apps_planning_app_id_fk", using: :btree
 
   create_table "officers", force: true do |t|
     t.string   "name"
@@ -81,6 +95,9 @@ ActiveRecord::Schema.define(version: 20140201161343) do
   add_index "planning_apps", ["app_status_id"], name: "index_planning_apps_on_app_status_id", using: :btree
   add_index "planning_apps", ["officer_id"], name: "index_planning_apps_on_officer_id", using: :btree
   add_index "planning_apps", ["parish_id"], name: "index_planning_apps_on_parish_id", using: :btree
+
+  add_foreign_key "constraints_planning_apps", "constraints", name: "constraints_planning_apps_constraint_id_fk"
+  add_foreign_key "constraints_planning_apps", "planning_apps", name: "constraints_planning_apps_planning_app_id_fk"
 
   add_foreign_key "planning_apps", "agent_names", name: "planning_apps_agent_name_id_fk"
   add_foreign_key "planning_apps", "app_categories", name: "planning_apps_app_category_id_fk"
