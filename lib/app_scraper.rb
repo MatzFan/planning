@@ -53,7 +53,7 @@ class AppScraper
 
   def source_for(app_ref, type)
     app_url = "#{URL_ROOT}#{type}.aspx?s=1&r=" + app_ref
-    source = `curl "#{app_url}"`
+    source = `curl -s 1 "#{app_url}"` # -s 1 suppresses progress bar
   end
 
 end # of module
