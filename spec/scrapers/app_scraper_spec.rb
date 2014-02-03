@@ -1,21 +1,22 @@
 require 'spec_helper'
+require 'app_scraper'
 
 describe AppScraper do
 
   context "::get_new_apps" do
 
-      xspecify "should populate database with an (inclusive) range of apps" do
+      specify "should populate database with an (inclusive) range of apps" do
         AppScraper.new.get_new_apps('P', '2014', '0180', '0181')
         expect(PlanningApp.first.reference).to eq('P/2014/0180')
         expect(PlanningApp.last.reference).to eq('P/2014/0181')
       end
 
-      xspecify "should skip pages for duff application references" do
+      specify "should skip pages for duff application references" do
         AppScraper.new.get_new_apps('P', '2014', '0181', '0182')
         expect(PlanningApp.count).to eq(1)
       end
 
-      xspecify "should populate correct fields" do
+      specify "should populate correct fields" do
         field_contents = {reference: 'P/2014/0179',
                           description: 'Extend play and parking areas.',
                           applicant: 'Mr A Norman, La Route du Port Elizabeth,'+
@@ -48,4 +49,4 @@ describe AppScraper do
 
     end # of context
 
-end
+end # of describe
