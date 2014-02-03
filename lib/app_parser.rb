@@ -6,24 +6,32 @@ class AppParser
         '83_ctl00_lbl'
 
   # mapping of database field-name_TableName and order each appears in page source
-  ITEMS = {reference_PlanningApp: 'Reference',
-           code_AppCategory: 'Category',
-           description_AppStatus: 'Status',
-           name_Officer: 'Officer',
-           applicant_PlanningApp: 'Applicant',
-           description_PlanningApp: 'Description',
-           app_property: 'ApplicationAddress',
-           name_AppRoad: 'RoadName',
-           name_Parish: 'Parish',
-           code_AppPostcode: 'PostCode',
-           name_Constraints: 'Constraints',
-           name_AgentName: 'Agent'}
+  FIELD_TABLE_DATA_MAP = {reference_PlanningApp: 'Reference',
+                          code_AppCategory: 'Category',
+                          description_AppStatus: 'Status',
+                          name_Officer: 'Officer',
+                          applicant_PlanningApp: 'Applicant',
+                          description_PlanningApp: 'Description',
+                          app_property: 'ApplicationAddress',
+                          name_AppRoad: 'RoadName',
+                          name_Parish: 'Parish',
+                          code_AppPostcode: 'PostCode',
+                          name_Constraints: 'Constraints',
+                          name_AgentName: 'Agent'}
+
+  def field(map_item)
+    map_item.value.spilt('_').first
+  end
+
+  def table(map_item)
+    map_item.value.spilt('_').last
+  end
 
   def parse_details_for(source)
     app_details = []
     table_data = source.split('pln-app')[1] # middle section of 3 is of interest
     table_split = table_data.split(DIV)
-    ITEMS.each_with_index do |(key, value), i|
+    FIELD_TABLE_DATA_MAP.each_with_index do |(key, value), i|
       data = table_split[i + 1].split('<').first
       app_details << parse_data_item(data, value)
     end
@@ -32,14 +40,11 @@ class AppParser
   end
 
   def parse_data_item(data, value)
-    if value == 'ApplicationAddress'
-      clean_html_escaped_characters(data.split("#{value}\" style=\"margin-top: 50px\">").last)
-    else
-      clean_html_escaped_characters(data.split("#{value}\">").last)
-    end
+    tag = (value == 'ApplicationAddress' ? '" style="margin-top: 50px' : '')
+    clean_html(data.split("#{tag}\">").last)
   end
 
-  def clean_html_escaped_characters(text)
+  def clean_html(text)
     CGI.unescapeHTML(text)
   end
 

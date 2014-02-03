@@ -7,7 +7,7 @@ class AppScraper
   def get_new_apps(type, year, from_ref, to_ref)
     (from_ref..to_ref).each do |app_number|
       page_source = source_for("#{type}/#{year}/#{app_number}", 'Detail')
-      write_data_for(page_source) unless invalid_application?(page_source)
+      write_data_for(page_source) unless invalid?(page_source)
     end
   end
 
@@ -20,6 +20,7 @@ class AppScraper
                               app_property: data[6],
                               latitude: data[12],
                               longitude: data[13])
+
     category = AppCategory.find_or_create_by(code: data[1])
     category.planning_apps << new_app
     status = AppStatus.find_or_create_by(description: data[2])
@@ -47,7 +48,7 @@ class AppScraper
     end
   end
 
-  def invalid_application?(page_source)
+  def invalid?(page_source)
     page_source.include?('An unexpected error has occurred')
   end
 
