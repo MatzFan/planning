@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140201162340) do
+ActiveRecord::Schema.define(version: 20140211202334) do
 
   create_table "agent_names", force: true do |t|
     t.string   "name"
@@ -71,21 +71,28 @@ ActiveRecord::Schema.define(version: 20140201162340) do
   end
 
   create_table "planning_apps", force: true do |t|
-    t.string   "reference",                               null: false
+    t.string   "reference",                                 null: false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "app_status_id"
     t.string   "applicant"
     t.string   "app_property"
-    t.decimal  "latitude",        precision: 8, scale: 6
-    t.decimal  "longitude",       precision: 8, scale: 6
+    t.decimal  "latitude",          precision: 8, scale: 6
+    t.decimal  "longitude",         precision: 8, scale: 6
     t.integer  "app_category_id"
     t.integer  "parish_id"
     t.integer  "agent_name_id"
     t.integer  "officer_id"
     t.integer  "app_road_id"
     t.integer  "app_postcode_id"
+    t.date     "validated"
+    t.date     "advertised"
+    t.date     "end_publicity"
+    t.date     "site_visited"
+    t.date     "panel_ministerial"
+    t.date     "decision"
+    t.date     "appeal"
   end
 
   add_index "planning_apps", ["agent_name_id"], name: "index_planning_apps_on_agent_name_id", using: :btree

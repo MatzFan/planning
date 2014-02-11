@@ -5,9 +5,10 @@ require 'app_parser'
 describe AppScraper do
 
   let(:scraper) { AppScraper.new }
-  let(:valid_app_file) {'./spec/parsers/ValidPlanningApp.html'}
-  let(:html_escaped_chars_app_file) { './spec/parsers/HTMLEscapeCharacters.html' }
-  let(:dodgy_parish_app_file) {'./spec/parsers/DodgyParish.html'}
+  let(:valid_app_file) { File.read('./spec/parsers/ValidPlanningApp.html') }
+  let(:html_escaped_chars_app_file) { File.read('./spec/parsers/HTMLEscapeCharacters.html') }
+  let(:dodgy_parish_app_file) { File.read('./spec/parsers/DodgyParish.html') }
+  let(:app_timelines_file) { File.read('./spec/parsers/AppTimelines.html') }
 
   context "#get_new_apps" do
 
@@ -27,22 +28,33 @@ describe AppScraper do
         expect(PlanningApp.count).to eq(1)
       end
 
+      specify "should correctly parse timeline dates for an app" do
+        scraper.get_new_apps('P', '2012', '0219', '0219')
+        expect(PlanningApp.last.validated.to_formatted_s(:db)).to eq('2012-02-23')
+        expect(PlanningApp.last.advertised.to_formatted_s(:db)).to eq('2012-02-28')
+        expect(PlanningApp.last.end_publicity.to_formatted_s(:db)).to eq('2012-04-19')
+        expect(PlanningApp.last.site_visited).to be_nil
+        expect(PlanningApp.last.panel_ministerial).to be_nil
+        expect(PlanningApp.last.decision.to_formatted_s(:db)).to eq('2012-04-18')
+        expect(PlanningApp.last.appeal.to_formatted_s(:db)).to eq('2012-05-03')
+      end
+
     end # of context
 
-    context "#write_data_for" do
+    context "#write_data" do
 
       specify "should correctly parse html escaped characters" do
-        scraper.write_data_for(File.read(html_escaped_chars_app_file))
+        scraper.write_data(html_escaped_chars_app_file, app_timelines_file)
         expect(AppRoad.last.name).to eq("Parcq de l'Oeillere")
         expect(AgentName.last.name).to eq("Dyson & Buesnel Limited")
       end
 
       specify "should correctly identify mistyped Parish name" do
-        scraper.write_data_for(File.read(dodgy_parish_app_file))
+        scraper.write_data(dodgy_parish_app_file, app_timelines_file)
         expect(Parish.last.name).to eq("St. Martin")
       end
 
-      specify "should populate correct fields" do
+      specify "should populate correct details fields" do
         field_contents = {reference: 'P/2014/0179',
                           description: 'Extend play and parking areas.',
                           applicant: 'Mr A Norman, La Route du Port Elizabeth,'+
@@ -50,7 +62,7 @@ describe AppScraper do
                           app_property: 'Mont Nicolle School',
                           latitude: 49.189235,
                           longitude: -2.187947}
-        scraper.write_data_for(File.read(valid_app_file))
+        scraper.write_data(valid_app_file, app_timelines_file)
         field_contents.each do |key, value|
           expect(PlanningApp.last.send(key)).to eq(value)
         end
@@ -58,7 +70,7 @@ describe AppScraper do
 
       specify "should populate correct FK's" do
         constraints = ['Built-Up Area', 'Protected Open Space']
-        scraper.write_data_for(File.read(valid_app_file))
+        scraper.write_data(valid_app_file, app_timelines_file)
         expect(PlanningApp.last.app_category.code).to eq('P')
         expect(PlanningApp.last.app_status.description).to eq('Pending')
         expect(PlanningApp.last.parish.name).to eq('St. Brelade')

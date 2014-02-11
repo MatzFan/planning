@@ -10,13 +10,16 @@ class AppScraper
 
   def get_new_apps(type, year, from_ref, to_ref)
     (from_ref..to_ref).each do |app_number|
-      page = source_for("#{type}/#{year}/#{app_number}", 'Detail')
-      write_data_for(page) unless (invalid?(page) || blank?(page))
+      details_page = source_for("#{type}/#{year}/#{app_number}", 'Detail')
+      timelines_page = source_for("#{type}/#{year}/#{app_number}", 'Timeline')
+      write_data(details_page, timelines_page) unless invalid? details_page
     end
   end
 
-  def write_data_for(page_source)
-    data = AppParser.new.parse_details_for(page_source)
+  def write_data(details, timelines)
+    parser = AppParser.new
+    data = parser.parse_details_for(details)
+    data['PlanningApp'].merge! parser.parse_timelines_for(timelines)
     new_app = PlanningApp.new(data['PlanningApp'])
     write_constraints(data['Constraints'].values[0], new_app)
     write_parish(data['Parish'].values[0], new_app)
@@ -45,8 +48,8 @@ class AppScraper
     end
   end
 
-  def invalid?(page_source)
-    page_source.include?('An unexpected error has occurred')
+  def invalid?(page)
+    page.include?('An unexpected error has occurred') || blank?(page)
   end
 
   def blank?(page_source)
