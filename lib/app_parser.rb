@@ -7,33 +7,47 @@ class AppParser
 
   # mapping of database field-name_TableName and order each appears in page source
   FIELD_TABLE_DATA_MAP = {reference_PlanningApp: 'Reference',
-                          code_AppCategory: 'Category',
+                          code_AppCategories: 'Category',
                           description_AppStatus: 'Status',
                           name_Officer: 'Officer',
                           applicant_PlanningApp: 'Applicant',
                           description_PlanningApp: 'Description',
-                          app_property: 'ApplicationAddress',
+                          app_property_PlanningApp: 'ApplicationAddress',
                           name_AppRoad: 'RoadName',
                           name_Parish: 'Parish',
                           code_AppPostcode: 'PostCode',
                           name_Constraints: 'Constraints',
                           name_AgentName: 'Agent'}
 
+  def table_name(symbol)
+    symbol.to_s.split('_').last
+  end
+
+  def field_name(symbol)
+    symbol[0..-(table_name(symbol).length + 2)]
+  end
+
   def parse_details_for(source)
-    app_details = []
+    app_details = {}
     table_data = source.split('pln-app')[1] # middle section of 3 is of interest
     table_split = table_data.split(DIV)
     FIELD_TABLE_DATA_MAP.each_with_index do |(key, value), i|
       data = table_split[i + 1].split('<').first
-      app_details << parse_data_item(data, value)
+      data_hash = Hash[field_name(key), parse_data_item(data, value)]
+      if app_details[table_name(key)]
+        app_details[table_name(key)].merge! data_hash
+      else
+        app_details[table_name(key)] = data_hash
+      end
     end
-    app_details << parse_coord('Latitude', source)
-    app_details << parse_coord('Longitude', source)
+    app_details['PlanningApp'].merge! Hash['latitude', parse_coord('Latitude', source)]
+    app_details['PlanningApp'].merge! Hash['longitude', parse_coord('Longitude', source)]
+    app_details
   end
 
   def parse_data_item(data, value)
     tag = (value == 'ApplicationAddress' ? '" style="margin-top: 50px' : '')
-    clean_html(data.split("#{tag}\">").last)
+    clean_html(data.split("#{value}#{tag}\">").last)
   end
 
   def clean_html(text)
@@ -43,10 +57,6 @@ class AppParser
   def parse_coord(coord, source)
     coord = source.split("window.MapCentre#{coord} = ").last
     coord = coord.split(';').first
-  end
-
-  def parse_constraints(string)
-    constraints = string.split(',').map { |c| c.strip }
   end
 
 end  # of class

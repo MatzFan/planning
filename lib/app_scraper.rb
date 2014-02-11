@@ -12,26 +12,23 @@ class AppScraper
   end
 
   def write_data_for(page_source)
-    parser = AppParser.new
-    data = parser.parse_details_for(page_source)
-    new_app = PlanningApp.new(reference: data[0],
-                              applicant: data[4],
-                              description: data[5],
-                              app_property: data[6],
-                              latitude: data[12],
-                              longitude: data[13])
+    data = AppParser.new.parse_details_for(page_source)
+    new_app = PlanningApp.new(data['PlanningApp'])
 
-    AppCategory.find_or_create_by(code: data[1]).planning_apps << new_app
-    AppStatus.find_or_create_by(description: data[2]).planning_apps << new_app
-    Officer.find_or_create_by(name: data[3]).planning_apps << new_app
-    AppRoad.find_or_create_by(name: data[7]).planning_apps << new_app
-    Parish.find_or_create_by(name: data[8]).planning_apps << new_app
-    AppPostcode.find_or_create_by(code: data[9]).planning_apps << new_app
-    AgentName.find_or_create_by(name: data[11]).planning_apps << new_app
-    parser.parse_constraints(data[10]).each do |c|
-      Constraint.find_or_create_by(name: c).planning_apps << new_app
+    write_constraints(data['Constraints'].values[0], new_app)
+
+    data.reject! { |k,v| k == 'PlanningApp' || k == 'Constraints' }
+    data.each do |table_name, field_data| # updates every parent table
+      table_name.classify.constantize.send(:find_or_create_by, field_data).planning_apps << new_app
     end
     new_app.save
+  end
+
+  def write_constraints(constraints_string, new_app)
+    constraints = constraints_string.split(',').map { |c| c.strip }
+    constraints.each do |c|
+      Constraint.find_or_create_by(name: c).planning_apps << new_app
+    end
   end
 
   def invalid?(page_source)
