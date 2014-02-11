@@ -14,13 +14,9 @@ class AppScraper
   def write_data_for(page_source)
     data = AppParser.new.parse_details_for(page_source)
     new_app = PlanningApp.new(data['PlanningApp'])
-
     write_constraints(data['Constraints'].values[0], new_app)
-
     data.reject! { |k,v| k == 'PlanningApp' || k == 'Constraints' }
-    data.each do |table_name, field_data| # updates every parent table
-      table_name.classify.constantize.send(:find_or_create_by, field_data).planning_apps << new_app
-    end
+    write_other_parent_table_data(data, new_app)
     new_app.save
   end
 
@@ -28,6 +24,13 @@ class AppScraper
     constraints = constraints_string.split(',').map { |c| c.strip }
     constraints.each do |c|
       Constraint.find_or_create_by(name: c).planning_apps << new_app
+    end
+  end
+
+  def write_other_parent_table_data(data, new_app)
+    data.each do |table_name, field_data|
+      table = table_name.classify.constantize
+      table.send(:find_or_create_by, field_data).planning_apps << new_app
     end
   end
 

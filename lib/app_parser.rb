@@ -30,9 +30,16 @@ class AppParser
   def parse_details_for(source)
     app_details = {}
     table_data = source.split('pln-app')[1] # middle section of 3 is of interest
-    table_split = table_data.split(DIV)
+    table_string = table_data.split(DIV)
+    parse_table_data(table_string, app_details)
+    app_details['PlanningApp'].merge! Hash['latitude', parse_coord('Latitude', source)]
+    app_details['PlanningApp'].merge! Hash['longitude', parse_coord('Longitude', source)]
+    app_details
+  end
+
+  def parse_table_data(table_string, app_details)
     FIELD_TABLE_DATA_MAP.each_with_index do |(key, value), i|
-      data = table_split[i + 1].split('<').first
+      data = table_string[i + 1].split('<').first
       data_hash = Hash[field_name(key), parse_data_item(data, value)]
       if app_details[table_name(key)]
         app_details[table_name(key)].merge! data_hash
@@ -40,9 +47,6 @@ class AppParser
         app_details[table_name(key)] = data_hash
       end
     end
-    app_details['PlanningApp'].merge! Hash['latitude', parse_coord('Latitude', source)]
-    app_details['PlanningApp'].merge! Hash['longitude', parse_coord('Longitude', source)]
-    app_details
   end
 
   def parse_data_item(data, value)
