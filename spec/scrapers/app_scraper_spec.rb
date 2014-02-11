@@ -6,6 +6,8 @@ describe AppScraper do
 
   let(:scraper) { AppScraper.new }
   let(:valid_app_file) {'./spec/parsers/ValidPlanningApp.html'}
+  let(:html_escaped_chars_app_file) { './spec/parsers/HTMLEscapeCharacters.html' }
+  let(:dodgy_parish_app_file) {'./spec/parsers/DodgyParish.html'}
 
   context "#get_new_apps" do
 
@@ -28,6 +30,18 @@ describe AppScraper do
     end # of context
 
     context "#write_data_for" do
+
+      specify "should correctly parse html escaped characters" do
+        scraper.write_data_for(File.read(html_escaped_chars_app_file))
+        expect(AppRoad.last.name).to eq("Parcq de l'Oeillere")
+        expect(AgentName.last.name).to eq("Dyson & Buesnel Limited")
+      end
+
+      specify "should correctly identify mistyped Parish name" do
+        scraper.write_data_for(File.read(dodgy_parish_app_file))
+        expect(Parish.last.name).to eq("St. Martin")
+      end
+
       specify "should populate correct fields" do
         field_contents = {reference: 'P/2014/0179',
                           description: 'Extend play and parking areas.',

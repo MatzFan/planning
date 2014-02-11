@@ -3,8 +3,10 @@ Dir.glob("./lib/*.*").each {|file| require file }
 class AppScraper
 
   URL_ROOT = 'https://www.mygov.je/Planning/Pages/PlanningApplication'
-
   PROPERTY_TAG_ID = 'ApplicationAddress" style="margin-top: 50px">'
+  PARISHES = ['St. Helier','St. Brelade','Trinity','St. Clement','St. Peter',
+              'St. Saviour','St. Martin','St. Mary','St. Ouen','Grouville',
+              'St. John','St. Lawrence']
 
   def get_new_apps(type, year, from_ref, to_ref)
     (from_ref..to_ref).each do |app_number|
@@ -17,9 +19,16 @@ class AppScraper
     data = AppParser.new.parse_details_for(page_source)
     new_app = PlanningApp.new(data['PlanningApp'])
     write_constraints(data['Constraints'].values[0], new_app)
-    data.reject! { |k,v| k == 'PlanningApp' || k == 'Constraints' }
+    write_parish(data['Parish'].values[0], new_app)
+    %w[PlanningApp Constraints Parish].each {|t| data.reject! { |k,v| k == t }}
     write_other_parent_table_data(data, new_app)
     new_app.save
+  end
+
+  def write_parish(parish_string, new_app)
+    p_string = parish_string.downcase.gsub(/\s+/, '').gsub('.','')
+    parish = PARISHES.select { |p| p.downcase.gsub('. ','') == p_string }[0]
+    Parish.find_or_create_by(name: parish).planning_apps << new_app
   end
 
   def write_constraints(constraints_string, new_app)
@@ -49,4 +58,4 @@ class AppScraper
     source = `curl -s 1 "#{app_url}"` # -s 1 suppresses progress bar
   end
 
-end # of module
+end # of class
