@@ -19,14 +19,6 @@ class AppParser
                           name_Constraints: 'Constraints',
                           name_AgentName: 'Agent'}
 
-  def field(map_item)
-    map_item.value.spilt('_').first
-  end
-
-  def table(map_item)
-    map_item.value.spilt('_').last
-  end
-
   def parse_details_for(source)
     app_details = []
     table_data = source.split('pln-app')[1] # middle section of 3 is of interest

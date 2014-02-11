@@ -21,31 +21,17 @@ class AppScraper
                               latitude: data[12],
                               longitude: data[13])
 
-    category = AppCategory.find_or_create_by(code: data[1])
-    category.planning_apps << new_app
-    status = AppStatus.find_or_create_by(description: data[2])
-    status.planning_apps << new_app
-    officer = Officer.find_or_create_by(name: data[3])
-    officer.planning_apps << new_app
-    road = AppRoad.find_or_create_by(name: data[7])
-    road.planning_apps << new_app
-    parish = Parish.find_or_create_by(name: data[8])
-    parish.planning_apps << new_app
-    postcode = AppPostcode.find_or_create_by(code: data[9])
-    postcode.planning_apps << new_app
-
-    populate(new_app, parser.parse_constraints(data[10]))
-
-    agent = AgentName.find_or_create_by(name: data[11])
-    agent.planning_apps << new_app
-    new_app.save
-  end
-
-  def populate(app, constraints)
-    constraints.each do |c|
-      constraint = Constraint.find_or_create_by(name: c)
-      app.constraints << constraint
+    AppCategory.find_or_create_by(code: data[1]).planning_apps << new_app
+    AppStatus.find_or_create_by(description: data[2]).planning_apps << new_app
+    Officer.find_or_create_by(name: data[3]).planning_apps << new_app
+    AppRoad.find_or_create_by(name: data[7]).planning_apps << new_app
+    Parish.find_or_create_by(name: data[8]).planning_apps << new_app
+    AppPostcode.find_or_create_by(code: data[9]).planning_apps << new_app
+    AgentName.find_or_create_by(name: data[11]).planning_apps << new_app
+    parser.parse_constraints(data[10]).each do |c|
+      Constraint.find_or_create_by(name: c).planning_apps << new_app
     end
+    new_app.save
   end
 
   def invalid?(page_source)
