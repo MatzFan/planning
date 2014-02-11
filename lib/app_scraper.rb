@@ -4,10 +4,12 @@ class AppScraper
 
   URL_ROOT = 'https://www.mygov.je/Planning/Pages/PlanningApplication'
 
+  PROPERTY_TAG_ID = 'ApplicationAddress" style="margin-top: 50px">'
+
   def get_new_apps(type, year, from_ref, to_ref)
     (from_ref..to_ref).each do |app_number|
-      page_source = source_for("#{type}/#{year}/#{app_number}", 'Detail')
-      write_data_for(page_source) unless invalid?(page_source)
+      page = source_for("#{type}/#{year}/#{app_number}", 'Detail')
+      write_data_for(page) unless (invalid?(page) || blank?(page))
     end
   end
 
@@ -36,6 +38,10 @@ class AppScraper
 
   def invalid?(page_source)
     page_source.include?('An unexpected error has occurred')
+  end
+
+  def blank?(page_source)
+    tag = page_source.split(PROPERTY_TAG_ID).last.split('<').first.empty?
   end
 
   def source_for(app_ref, type)

@@ -1,12 +1,6 @@
 require 'spec_helper'
-# require 'app_scraper'
+require 'app_parser'
 
 describe AppParser do
-
-  context "" do
-
-
-
-  end # of context
 
 end # of describe
