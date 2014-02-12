@@ -40,7 +40,6 @@ class AppParser
     app_timelines = {}
     DATES_MAP.each_with_index do |(key, value), i|
       data = source.split(TIME_DIV)[i + 2].split('<').first
-      # data_hash = Hash[key, parse_table_item(data, value)]
       app_timelines[key] = parse_table_item(data, value)
     end
     app_timelines
@@ -58,7 +57,11 @@ class AppParser
   def parse_details(table_string, app_details)
     FIELD_TABLE_DATA_MAP.each_with_index do |(key, value), i|
       data = table_string[i + 1].split('<').first
-      data_hash = Hash[field_name(key), parse_table_item(data, value)]
+      begin
+        data_hash = Hash[field_name(key), parse_table_item(data, value)]
+      rescue
+        puts "Problem with parsing - app_details are:\n\n #{app_details.inspect}"
+      end
       if app_details[table_name(key)]
         app_details[table_name(key)].merge! data_hash
       else
@@ -78,7 +81,7 @@ class AppParser
   end
 
   def clean_html(text)
-    CGI.unescapeHTML(text)
+    CGI.unescapeHTML(text) unless text.nil?
   end
 
   def parse_coord(coord, source)

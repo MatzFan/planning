@@ -9,6 +9,8 @@ describe AppScraper do
   let(:html_escaped_chars_app_file) { File.read('./spec/parsers/HTMLEscapeCharacters.html') }
   let(:dodgy_parish_app_file) { File.read('./spec/parsers/DodgyParish.html') }
   let(:app_timelines_file) { File.read('./spec/parsers/AppTimelines.html') }
+  let(:empty_agent_file) { File.read('./spec/parsers/EmptyAgent.html') }
+
 
   context "#get_new_apps" do
 
@@ -42,6 +44,11 @@ describe AppScraper do
     end # of context
 
     context "#write_data" do
+
+      specify "should correctly deal with empty fields" do
+        scraper.write_data(empty_agent_file, app_timelines_file)
+        expect(AgentName.last.name).to be_nil
+      end
 
       specify "should correctly parse html escaped characters" do
         scraper.write_data(html_escaped_chars_app_file, app_timelines_file)
