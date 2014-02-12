@@ -11,8 +11,10 @@
     %ul.left
       = render 'layouts/navigation_links'
       = form_tag(planning_apps_path, method: :get) do
-        = text_field_tag :query, nil, placeholder: 'Search applications'
-        = submit_tag 'Search', class: 'alert button expand', id: 'search'
+        .large-8.small-9.columns
+          = text_field_tag :query, nil, placeholder: 'Search description'
+        .large-4.small-3.columns
+          = submit_tag 'Search', class: 'alert button expand', id: 'search'
     %ul.hmenu.right
       = render 'devise/menu/registration_items'
       = render 'devise/menu/login_items'
