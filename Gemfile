@@ -10,16 +10,19 @@ group :development, :test do
   gem 'rspec-rails', '2.14.1'
   gem 'capybara', '2.2.1'
   gem 'database_cleaner', '1.2.0'
+  gem 'factory_girl_rails', '4.3.0'
+  gem 'rails_layout', '1.0.5'
 end
-
-gem 'haml-rails', '0.5.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.2'
-
-# Use mysql as the database for Active Record
+gem 'haml-rails', '0.5.3'
 gem 'mysql2', '0.3.15'
+gem 'dusen', '0.4.9'
 gem 'foreigner', '1.6.1'
+gem 'foundation-rails', '5.0.3.1'
+gem 'foundation_rails_helper', '0.4'
+gem 'devise', '3.2.2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '4.0.1'
@@ -37,7 +40,7 @@ gem 'coffee-rails', '4.0.1'
 gem 'jquery-rails', '3.1.0'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-# gem 'turbolinks', '2.2.1'
+gem 'turbolinks', '2.2.1'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '2.0.2'

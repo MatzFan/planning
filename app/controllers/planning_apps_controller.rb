@@ -1,7 +1,7 @@
 class PlanningAppsController < ApplicationController
-  def create
+
+  def search
+
   end
 
-  def index
-  end
 end
