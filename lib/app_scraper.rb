@@ -8,11 +8,12 @@ class AppScraper
               'St. Saviour','St. Martin','St. Mary','St. Ouen','Grouville',
               'St. John','St. Lawrence']
 
-  def get_new_apps(type, year, from_ref, to_ref)
+  def get_new_apps(type, year, from_ref, to_ref, verbose = false)
     (from_ref..to_ref).each do |app_number|
       details_page = source_for("#{type}/#{year}/#{app_number}", 'Detail')
       timelines_page = source_for("#{type}/#{year}/#{app_number}", 'Timeline')
       write_data(details_page, timelines_page) unless invalid? details_page
+      puts "#{type}/#{year}/#{app_number}" if verbose
     end
   end
 
@@ -22,7 +23,7 @@ class AppScraper
     data['PlanningApp'].merge! parser.parse_timelines_for(timelines)
     new_app = PlanningApp.new(data['PlanningApp'])
     write_constraints(data['Constraints'].values[0], new_app)
-    write_parish(data['Parish'].values[0], new_app)
+    write_parish(data['Parish'].values[0], new_app) if data['Parish'].values[0] # check not empty
     %w[PlanningApp Constraints Parish].each {|t| data.reject! { |k,v| k == t }}
     write_other_parent_table_data(data, new_app)
     new_app.save
