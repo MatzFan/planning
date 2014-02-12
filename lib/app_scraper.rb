@@ -12,7 +12,11 @@ class AppScraper
     (from_ref..to_ref).each do |app_number|
       details_page = source_for("#{type}/#{year}/#{app_number}", 'Detail')
       timelines_page = source_for("#{type}/#{year}/#{app_number}", 'Timeline')
-      write_data(details_page, timelines_page) unless invalid? details_page
+      begin
+        write_data(details_page, timelines_page) unless invalid? details_page
+      rescue
+        puts "Error with application: #{type}/#{year}/#{app_number}"
+      end
     end
   end
 
