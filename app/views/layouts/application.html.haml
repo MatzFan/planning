@@ -12,6 +12,8 @@
   %body
     %header
       = render 'layouts/navigation'
-    %main{:role => "main"}
+    %main.large-1.columns
+      Hello
+    %main.large-11.columns{:role => "main"}
       = render 'layouts/messages'
       = yield
