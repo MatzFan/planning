@@ -23,6 +23,7 @@ gem 'foreigner', '1.6.1'
 gem 'foundation-rails', '5.0.3.1'
 gem 'foundation_rails_helper', '0.4'
 gem 'devise', '3.2.2'
+gem 'unicorn', '4.8.1'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '4.0.1'
@@ -52,9 +53,6 @@ end
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
-
-# Use unicorn as the app server
-# gem 'unicorn'
 
 # Use Capistrano for deployment
 # gem 'capistrano', group: :development
