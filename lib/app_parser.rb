@@ -2,10 +2,9 @@ require 'cgi'
 
 class AppParser
 
-  DETAILS_DIV = '<span id="ctl00_SPWebPartManager1_g_cfcbb358_c3fe_4db2_9273_'+
-                '0f5e5f132083_ctl00_lbl'
-  TIME_DIV = 'ctl00_SPWebPartManager1_g_eb24f5d8_516c_4120_9f29_512444e2187a_'+
-             'ctl00_lbl'
+  DETAILS_DIV = '<span id="ctl00_SPWebPartManager1_g_4f066fb1_b1df_4e20_880a_6b578c53fe0e_ctl00_lbl'
+
+  TIME_DIV = 'ctl00_SPWebPartManager1_g_849f47f2_9f27_42a4_9a38_42ded8266a36_ctl00_lbl'
 
   FIELD_TABLE_DATA_MAP = {reference_PlanningApp: 'Reference',
                           code_AppCategories: 'Category',

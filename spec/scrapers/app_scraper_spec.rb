@@ -35,7 +35,7 @@ describe AppScraper do
         scraper.get_new_apps('P', '2012', '0219', '0219')
         expect(PlanningApp.last.validated.to_formatted_s(:db)).to eq('2012-02-23')
         expect(PlanningApp.last.advertised.to_formatted_s(:db)).to eq('2012-02-28')
-        expect(PlanningApp.last.end_publicity.to_formatted_s(:db)).to eq('2012-04-19')
+        expect(PlanningApp.last.end_publicity.to_formatted_s(:db)).to eq('2012-03-20')
         expect(PlanningApp.last.site_visited).to be_nil
         expect(PlanningApp.last.panel_ministerial).to be_nil
         expect(PlanningApp.last.decision.to_formatted_s(:db)).to eq('2012-04-18')
