@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.1.2'
+ruby '2.1.5'
 
 group :production do
   gem 'rails_12factor', '0.0.2'
@@ -15,7 +15,7 @@ group :development, :test do
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.2'
+gem 'rails', '4.1.8'
 gem 'haml-rails', '0.5.3'
 gem 'mysql2', '0.3.15'
 gem 'dusen', '0.4.9'
